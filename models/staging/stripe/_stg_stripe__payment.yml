@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_stripe__payments
+    description: Payments made through the Stripe platform.
+    columns:
+      - name: payment_id
+        description: The primary key for the payments.
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Reference to the order for which the payment was made.
+        tests:
+          - relationships:
+              to: ref("stg_jaffle_shop__orders")
+              field: order_id
+      - name: payment_method
+        description: "{{ doc('payment_method') }}"
+        tests:
+          - accepted_values:
+              values:
+                - coupon
+                - credit_card
+                - bank_transfer
+                - gift_card
+      - name: amount
+        description: The amount paid.
+      - name: created_at
+        description: Date on which this payment was made.
+      - name: status
+        description: "{{ doc('payment_status') }}"
+        tests:
+          - accepted_values:
+              values:
+                - fail
+                - success
